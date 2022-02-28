@@ -1,0 +1,107 @@
+<% include header %>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="my-4">Prishtina International Airport - Adem Jashari</h2>
+      <div id="flights">
+      <% flights.forEach(function(flight){ %>
+              <div class="card mb-4" id="flight-<%= flight._id %>">
+                  <div class="card-body">
+                      <div class="col-lg-6">
+
+                        <% if (flight.image) { %>
+                          <img class="img-fluid rounded" src="<%= flight.image %>" alt= ""> 
+                          <% } else { %> 
+                          <img class="img-fluid rounded"
+                          src="http://placehold.it/750x300" alt=""> <% } %>
+                      </div>
+                    <h2 class="card-title">
+
+                    Airplane name:    <%= flight.fname %>
+                    </h2>
+                    <p class="card-text">
+                      Departure City:  <%= flight.dcity %> 
+                    </p>
+                      <p class="card-text">
+                       Arrival City: <%= flight.acity %>
+                    </p>
+                      <p class="card-text">
+                      Departure Date:  <%= flight.ddate %>
+                    </p>
+                      <p class="card-text">
+                      Arrival Date:  <%= flight.adate %>
+                      </p>
+                      <p class="card-text">
+                       Price: <%= flight.price %>
+                    </p>
+
+                    <a href="flights/<%= flight._id %>" class="btn btn-primary">Read More &rarr;</a>
+                 </div>
+                 
+                </div>
+          
+
+
+                <% }) %>
+        </div>
+
+      
+    </div>
+    
+  </div>
+  </div>
+
+ 
+<script>
+
+  var socket = io();
+  
+  socket.on("delete_post",function(replyId){
+  document.getElementById("flight-" +replyId).remove();
+  });
+
+  socket.on("new_post",function(formData){
+  var html="";
+        html +=' <div class="card mb-4">';
+          html +='<div class="card-body">';
+          html += ' <div class="row">';
+           html +=' <div class="col-lg-6">';
+           html +='<img class="img-fluid rounded"  src="' + formData.image + '" alt="">';
+            html +='<h2 class="card-title">';
+           html += 'Airplane name:'+ formData.fname ;
+           html +=' </h2>';
+           html +=' <p class="card-text">';
+           html += 'Departure City : '+formData.dcity ;
+           html +=' </p>';
+            html +='  <p class="card-text">';
+             html += 'Arrical City : '+formData.acity ;
+           html +=' </p>';
+            html +='  <p class="card-text">';
+           html +=   'Departure Date : '+formData.ddate ;
+          html +='  </p>';
+           html +='   <p class="card-text">';
+           html +=  'Arrival Date : '+formData.adate ;
+            html +='  </p>';
+            html +='  <p class="card-text">';
+            html +=   'Price : '+ formData.price;
+           html +=' </p>';
+
+          html +='  <a href="flights/'+ formData._id + '" class="btn btn-primary">Read More &rarr;</a>';
+        html +='  </div>';
+         
+      html +='  </div>';
+      html +='</div>';
+            html +='</div>';
+
+
+      $("#flights").prepend(html);
+
+    });
+
+
+</script>
+
+
+<% include footer %>

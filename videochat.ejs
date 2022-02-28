@@ -1,0 +1,87 @@
+<% include user/header %>
+
+
+
+<head>
+    <title>Video Chat App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="main.css" rel="stylesheet">
+    <style type="text/css">
+    body{
+    	background-color: #004d66;
+    }
+    	
+    #chatArea
+    {
+  position: relative;
+    
+  height: calc(100% - 69px - 88px);
+  background-color: #cce6ff;
+  margin-left: -15px;
+  margin-right: -15px;
+  overflow-y: scroll;
+    }
+  input[type=text], select {
+  width: 100%;
+  padding: 5px 15px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  margin: 6px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+#myName {
+	margin-top: -9px
+}
+#myMessage{
+		margin-top: -9px;
+}
+
+    </style>
+    }
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row h-90 w-100">
+            <div class="col-12 col-sm-2 d-flex justify-content-center">
+                <div  class="embed-responsive embed-responsive-16by9">
+                    <video class="embed-responsive-item" muted></video>
+                </div>
+                
+            </div>
+            <div class="col-12 col-sm-5 d-flex justify-content-center">
+                <div id="peerDiv" class="embed-responsive embed-responsive-16by9">
+                </div>
+            </div>
+            <div class="col-12 col-sm-5">
+                <label><b>Name:</b>&nbsp;</label><input id="myName" type="text"/>
+                <div id="chatArea">Message Output:</div>
+                <label><b>Message:</b>&nbsp;</label><input id="myMessage" type="text"/>
+                
+                <input style="background-color: #2db300" id="sendMessage" type="submit"/>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="bundle.js"></script>
+    
+</body>
+</html>

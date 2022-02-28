@@ -1,0 +1,177 @@
+<% include header %>
+
+<div id="layoutSidenav_content">
+  <main>
+    <div class="container-fluid">
+      <form method="POST" onsubmit="return doPost(this);">
+          <h1>Add a Flight</h1>
+              <div class="form-group">
+                <label >Flight name </label>
+                <input name="fname" class="form-control" placeholder="Flight name"  >
+              </div>
+              <button class = "btn btn-primary " data-toggle = "modal" data-target = "#myModal" type="button">Upload image    </button>
+            
+              <div class="form-group">
+                  <label >Departure City </label>
+                  <input name="dcity" class="form-control" placeholder="Departure City"  >
+              </div>
+              <div class="form-group">
+                  <label >Arrival City </label>
+                  <input name="acity" class="form-control" placeholder="Arrival City"  >
+              </div>
+              <div class="form-group">
+                  <label >Departure Date</label>
+                  <input name="ddate" class="form-control" placeholder="Departure Date"  >
+              </div>
+              <div class="form-group">
+                  <label >Arrival Date</label>
+                  <input name="adate" class="form-control" placeholder="Arrival Date"  >
+              </div>
+              <div class="form-group">
+                  <label >Price</label>
+                  <input name="price" class="form-control" placeholder="Price"  >
+              </div>
+                  <input type="submit" class="btn btn-info" value="Post"/>
+            
+      </form>
+    </div>
+  </main>
+      <table class="table">
+        <tr> 
+          <th>Airplane Name</th>
+          <th>Image</th>
+          <th>Departure City</th>
+          <th>Arrival City</th>
+          <th>Departure Date</th>
+          <th>Arrival Date</th>
+          <th>Price</th>
+          <th>Action</th>
+
+        </tr>
+
+        <%flights.forEach(function(flight){ %>
+        <tr>
+            <td> <%= flight.fname %></td>
+            <td> 
+              <img src="<%= flight.image %>" style="width: 300px;"></td>
+            <td><%= flight.dcity %></td>
+            <td><%= flight.acity  %></td>
+            <td><%= flight.ddate %></td>
+            <td><%= flight.adate %></td>
+            <td><%= flight.price %></td>
+            <td>
+              <a href="/flights/edit/<%= flight._id %>" 
+              class="btn btn-warning btn-sm">Edit </a>
+
+              <button type="button" class="btn btn-danger btn-sm" onclick="doDelete('<%= flight._id %>','<%=flight.image %>');">Delete </button>
+            </td>
+            
+
+        </tr>
+
+         <% }) %>
+      </table>
+
+<script>
+
+  function doDelete(flightId,image){
+    if(confirm("Are you sure you want to delete?")){
+
+    }
+    $.ajax({
+    url: "/do-delete",
+    method:"POST",
+    data:{
+    "_id": flightId,
+    "image":image
+    },
+    success:function(response){
+
+    var socket = io();
+    socket.emit("delete_post",flightId);
+    alert(response);
+    }
+    });
+    }
+  
+
+
+    function doPost(form){
+    var formData = {fname: form.fname.value, dcity: form.dcity.value, acity: form.acity.value, ddate: form.ddate.value, adate: form.adate.value, price:form.price.value,image:imagePath};
+ 
+        $.ajax({
+            url:"/do-post",
+            method: "POST",
+            data:formData,
+            success: function(response){
+                alert(response.text);
+
+        formData._id = response._id;
+
+        var socket = io();
+        socket.emit("new_post",formData);
+
+              
+
+                
+               
+            }
+        });
+        return false;
+    }
+</script>
+
+<!-- Modal -->
+<div class = "modal fade" id = "myModal" tabindex = "-1" role = "dialog" 
+   aria-labelledby = "myModalLabel" aria-hidden = "true">
+   
+   <div class = "modal-dialog">
+      <div class = "modal-content">
+          
+            <h4 class = "modal-title" id = "myModalLabel">
+              Upload image
+            </h4>
+              <div class = "modal-header">
+            <button type = "button" class = "close" data-dismiss = "modal" aria-hidden = "true">
+                  &times;
+            </button>
+         </div>
+         
+         <div class = "modal-body">
+          <form method="POST" enctype="multipart/form-data" id="form-upload">
+            <div class="form-group">
+              <input type="file" name="file" class="form-control"/>
+            </div>
+            <input type="submit" class="btn btn-success" value="Upload" />
+            
+          </form>
+         </div>
+         
+ 
+         
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal-dialog -->
+  
+</div><!-- /.modal -->
+
+<script>
+  var imagePath = "";
+  $("#form-upload").on("submit",function(e){
+    e.preventDefault();
+    $.ajax({
+      url: "/do-upload-image",
+      method:"POST",
+      data: new FormData(this),
+      contentType: false,
+      cache: false,
+      processData: false,
+      success: function(response){
+        imagePath = response;
+        $("#myModal").modal("hide");
+      }
+    });
+  });
+
+  
+</script>
+<% include footer %>
